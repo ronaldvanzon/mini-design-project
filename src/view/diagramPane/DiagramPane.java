@@ -59,7 +59,7 @@ public class DiagramPane extends javax.swing.JInternalFrame {
         this.metaArchitect = ma;
         
         try {
-            drawPanel = new PanelDiagramPane(this.getBounds());
+            drawPanel = new PanelDiagramPane(this.getBounds(), metaArchitect);
             getContentPane().add(drawPanel);
 
             pack();
@@ -93,8 +93,6 @@ public class DiagramPane extends javax.swing.JInternalFrame {
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setIconifiable(true);
-        setMaximizable(true);
-        setResizable(true);
         setTitle("Class diagram");
         setToolTipText("");
 
@@ -102,11 +100,11 @@ public class DiagramPane extends javax.swing.JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGap(0, 1242, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 282, Short.MAX_VALUE)
+            .addGap(0, 765, Short.MAX_VALUE)
         );
 
         pack();
