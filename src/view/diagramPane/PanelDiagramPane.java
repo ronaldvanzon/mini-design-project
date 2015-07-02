@@ -79,15 +79,17 @@ public class PanelDiagramPane extends javax.swing.JPanel {
                                 jd.setVisible(true);
                                 //TODO dialog asigned to an element
                                 model.reload();
-                                validate();
+                                System.out.println("Model reloaded1, now repainting....");
+                                revalidate();
                                 repaint();
                             } else if (selectedNode instanceof model.Class) {
                                 BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();                        
                                 ClassElementDialog jd = new ClassElementDialog(null, false, (model.Class)selectedNode, model);
                                 jd.setVisible(true);
-                                //TODO dialog asigned to an element                       
+                                //TODO dialog asigned    to an element                       
                                 model.reload();
-                                validate();
+                                System.out.println("Model reloaded,2 now repainting....");
+                                revalidate();
                                 repaint();
                             } else if (selectedNode instanceof model.Package) {
                                 BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();                        
@@ -95,7 +97,10 @@ public class PanelDiagramPane extends javax.swing.JPanel {
                                 jd.setVisible(true);
                                 //TODO dialog asigned to an element                       
                                 model.reload();   
-                                validate();
+                                System.out.println("Model reloaded3, now repainting....");
+                                ma.revalidate();
+                                ma.repaint();
+                                revalidate();
                                 repaint();
                             }
                         }
@@ -106,13 +111,14 @@ public class PanelDiagramPane extends javax.swing.JPanel {
                             //TODO dialog asigned to an element
                             BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();
                             model.reload();
-                            validate();
+                            System.out.println("Model reloaded4, now repainting....");
+                            revalidate();
                             repaint();
                         }
                     }
                     
-                    validate();
-                    repaint();
+                    ma.revalidate();
+                    ma.repaint();
                 }
             }           
 
@@ -202,7 +208,7 @@ public class PanelDiagramPane extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1000, Short.MAX_VALUE)
+            .addGap(0, 294, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -18,6 +18,8 @@ import model.NamedElement;
 import model.Class;
 import model.Property;
 import model.Package;
+import view.diagramPane.TreeNodeTransferHandler;
+import view.diagramPane.TreeTransferHandler;
 
 /**
  *
@@ -32,6 +34,9 @@ public class Browser extends javax.swing.JInternalFrame {
         initComponents();
        
         populateTree();
+        
+        tree.setDragEnabled(true);
+        tree.setTransferHandler(new TreeNodeTransferHandler());
     }
     
     public javax.swing.JTree getTree() {
@@ -200,23 +205,25 @@ public class Browser extends javax.swing.JInternalFrame {
         try{
             //find selected element node
             TreePath selectedPath = tree.getSelectionPath();
-            MutableTreeNode nodeParent = (MutableTreeNode) selectedPath.getLastPathComponent();
-            BrowserModel model = (BrowserModel) tree.getModel();
-            try {
-                NamedElement ne = model.createElement(s, nodeParent, 0, false, true);
-                ClassElementDialog jd = new ClassElementDialog(null, closable, ne, model);
-                jd.setVisible(true);
-                model.reload();
-                //create new object
-                tree.setSelectionPath(selectedPath);
-                
-                return ne;
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                ex.getMessage(),
-                "Model Exception",
-                JOptionPane.ERROR_MESSAGE);
-                Logger.getLogger(Browser.class.getName()).log(Level.SEVERE, null, ex);
+            if ( selectedPath != null ){
+                MutableTreeNode nodeParent = (MutableTreeNode) selectedPath.getLastPathComponent();
+                BrowserModel model = (BrowserModel) tree.getModel();
+                try {
+                    NamedElement ne = model.createElement(s, nodeParent, 0, false, true);
+                    ClassElementDialog jd = new ClassElementDialog(null, closable, ne, model);
+                    jd.setVisible(true);
+                    model.reload();
+                    //create new object
+                    tree.setSelectionPath(selectedPath);
+
+                    return ne;
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this,
+                    ex.getMessage(),
+                    "Model Exception",
+                    JOptionPane.ERROR_MESSAGE);
+                    Logger.getLogger(Browser.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         catch(Exception e){

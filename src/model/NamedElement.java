@@ -5,13 +5,15 @@
  */
 package model;
 
+import java.awt.datatransfer.Transferable;
+import java.io.Serializable;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
  * @author lsmet
  */
-public abstract class NamedElement extends DefaultMutableTreeNode{
+public abstract class NamedElement extends DefaultMutableTreeNode implements Serializable, Transferable {
     protected String name;
     protected String description;
     

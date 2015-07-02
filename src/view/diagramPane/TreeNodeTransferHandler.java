@@ -37,27 +37,39 @@ package view.diagramPane;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
+import model.NamedElement;
 import view.ModelAction;
 
-public class TreeTransferHandler extends TransferHandler {
+public class TreeNodeTransferHandler extends TransferHandler {
     private int[] indices = null;
     private int addIndex = -1; //Location where items were added
     private int addCount = 0;  //Number of items added.
             
     public boolean canImport(TransferHandler.TransferSupport info) {
-        // Check for String flavor
-        if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+        try {
+            // Check for String flavor
+            //if (!info.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            if (!info.isDataFlavorSupported( new DataFlavor(DataFlavor.javaJVMLocalObjectMimeType +
+                    ";class=\"" + NamedElement.class.getName() + "\"") )) {
+                return false;
+            }
+            
+            return true;
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(TreeNodeTransferHandler.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-        return true;
    }
 
     protected Transferable createTransferable(JComponent c) {
-        return new StringSelection(exportString(c));
+        //return new StringSelection(exportString(c));
+        return exportNode(c);
     }
     
     public int getSourceActions(JComponent c) {
@@ -113,26 +125,20 @@ public class TreeTransferHandler extends TransferHandler {
         JTree tree = (JTree)c;
         TreePath selectedPath = tree.getSelectionPath();
         MutableTreeNode nodeParent = (MutableTreeNode) selectedPath.getLastPathComponent();
-        
+        int i = nodeParent.getIndex(nodeParent.getParent());
         
         return nodeParent.toString();
 
     }
     
-    protected ModelAction exportNode(JComponent c) {
+    protected Transferable exportNode(JComponent c) {
         
         JTree tree = (JTree)c;
         TreePath selectedPath = tree.getSelectionPath();
         MutableTreeNode nodeParent = (MutableTreeNode) selectedPath.getLastPathComponent();
+        Transferable ne = (Transferable)nodeParent;       
         
-        ModelAction result;
-        
-        if (nodeParent.toString().equals("Class"))
-            result = ModelAction.AddClass;
-        else
-            result = ModelAction.AddPackage;
-        
-        return result;
+        return ne;
 
     }    
     

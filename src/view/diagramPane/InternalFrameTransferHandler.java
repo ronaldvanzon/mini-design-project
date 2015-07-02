@@ -69,6 +69,9 @@ public class InternalFrameTransferHandler extends TransferHandler {
         } else if (data.equals("Package")) {
             NamedElement ne = ma.browser.createNewPackage();
             pane.drawPanel.setNewPackage(ne, dropPoint);
+        } else {
+            
+            System.out.println("TransferHandler: " + data);
         }
         
         pane.repaint();
