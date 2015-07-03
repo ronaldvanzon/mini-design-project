@@ -19,14 +19,13 @@ public class BrowserModel extends DefaultTreeModel{
        
     public BrowserModel() {
         super(null);
-        super.root = new DefaultMutableTreeNode("Models");
-        
+        super.root = new DefaultMutableTreeNode("Models");        
     }
     
     public Model createModel(String name, int index){
         //Note: Is this cast safe?
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) super.root;
-        Model newModel = new Model(name);
+        Model newModel = Model.getInstance(name);
         super.insertNodeInto(newModel, root, index);
         super.reload(root);
         return newModel;

@@ -15,7 +15,16 @@ public class Model extends DefaultMutableTreeNode{
     private String name;
     private String description;
     
-    public Model(String name){
+    //Singleton pattern.
+    private static Model instance = null;
+    
+    public static Model getInstance(String name) {
+        if (instance == null)
+            instance = new Model(name);
+        return instance;
+    }
+    
+    private Model(String name) {
         super(name);
         setName(name);
         description = "";
