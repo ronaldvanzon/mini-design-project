@@ -5,6 +5,7 @@
  */
 package view.diagramPane;
 
+import controller.ModelController;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -51,15 +52,17 @@ public class DiagramPane extends javax.swing.JInternalFrame {
     private MetaArchitect metaArchitect;
     public PanelDiagramPane drawPanel;   
     
+    private ModelController modelController = null;
+    
     /**
      * Creates new form DiagramPane
      */
-    public DiagramPane(MetaArchitect ma) {
+    public DiagramPane(MetaArchitect ma, ModelController modelController) {
         initComponents();
         this.metaArchitect = ma;
         
         try {
-            drawPanel = new PanelDiagramPane(this.getBounds(), metaArchitect);
+            drawPanel = new PanelDiagramPane(this.getBounds(), metaArchitect, modelController);
             getContentPane().add(drawPanel);
 
             pack();
@@ -79,7 +82,7 @@ public class DiagramPane extends javax.swing.JInternalFrame {
         } catch (IOException ex) {
             Logger.getLogger(DiagramPane.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+    }   
 
     /**
      * This method is called from within the constructor to initialize the form.

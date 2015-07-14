@@ -46,7 +46,7 @@ public class InternalFrameTransferHandler extends TransferHandler {
     }
     
     public boolean importData(TransferHandler.TransferSupport info) {
-        if (!info.isDrop()) {
+        /*if (!info.isDrop()) {
             return false;
         }
         
@@ -77,7 +77,8 @@ public class InternalFrameTransferHandler extends TransferHandler {
         pane.repaint();
 //        pane.drawPanel.repaint();
             
-        return true;
+        return true;*/
+        return false;
     }
   
     

@@ -13,7 +13,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  *
  * @author lsmet
  */
-public abstract class NamedElement extends DefaultMutableTreeNode implements Serializable, Transferable {
+public abstract class NamedElement extends DefaultMutableTreeNode {// implements Serializable, Transferable {
     protected String name;
     protected String description;
     

@@ -5,22 +5,11 @@
  */
 package view;
 
+import controller.ModelController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import model.BrowserModel;
-import model.NamedElement;
-import model.Class;
-import model.Model;
 import model.Property;
 
 /**
@@ -28,30 +17,31 @@ import model.Property;
  * @author lsmet
  */
 public class ClassElementDialog extends javax.swing.JDialog {
-    
-    private NamedElement node;
-    private BrowserModel model;
-    private ClassTableModel ttm;
 
+    private ClassTableModel ttm;
+    private ModelController modelController = null;
+    private model.Class classElement = null;
 
  
     
     /**
      * Creates new form elementDialog
      */
-    public ClassElementDialog(java.awt.Frame parent, boolean modal, NamedElement node, BrowserModel model) {
+    public ClassElementDialog(java.awt.Frame parent, boolean modal, model.Class classElement, ModelController modelController) {
         super(parent, modal);
         initComponents();       
         
-        this.node = node;
-        this.NameTxt.setText(node.getName());
-        this.DescriptionArea.setText(node.getDescription());
-        this.model = model;
+        this.modelController = modelController;
+        this.classElement = classElement;//modelController.getCurrentClassUnderEdit();
+        
+        
+        this.NameTxt.setText(classElement.getName());
+        this.DescriptionArea.setText(classElement.getDescription());
 
         this.ttm = new ClassTableModel();
         
-        for (int i = 0; i < node.getChildCount(); i++) {
-            TreeNode n = node.getChildAt(i);
+        for (int i = 0; i < classElement.getChildCount(); i++) {
+            TreeNode n = classElement.getChildAt(i);
             this.ttm.AddProperty((Property)n);
         }
         
@@ -199,8 +189,9 @@ public class ClassElementDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CloseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseBtnActionPerformed
-        node.setName(this.NameTxt.getText());
-        node.setDescription(this.DescriptionArea.getText());
+        modelController.changeNameOfClass(classElement, this.NameTxt.getText());
+        modelController.changeDescriptionOfClass(classElement, this.DescriptionArea.getText());
+       
         this.dispose();
     }//GEN-LAST:event_CloseBtnActionPerformed
 
@@ -217,11 +208,10 @@ public class ClassElementDialog extends javax.swing.JDialog {
         try{
             if ((s != null) && (s.length() > 0)) {
                 //find selected property node
-                MutableTreeNode nodeParent = (MutableTreeNode) node;
                 try {
                     //TODO: check whether parent is a Class, since a Property can only be added to a class.
                     //model.createElement(s, nodeParent, 0, true);
-                    NamedElement p = model.createElement(s, nodeParent, 0, true, false);
+                    Property p = modelController.addProperty(classElement, s);
                     ClassTableModel tableModel = (ClassTableModel)propertiesTable.getModel();
                     tableModel.addRow((Property)p);
                     tableModel.fireTableDataChanged();
@@ -259,7 +249,7 @@ public class ClassElementDialog extends javax.swing.JDialog {
     private void deletePropertyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deletePropertyButtonActionPerformed
         if (propertiesTable.getSelectedRow() != -1)
         {
-            node.remove(propertiesTable.getSelectedRow());
+            modelController.removeProperty(classElement, propertiesTable.getSelectedRow());
 
             ClassTableModel model = (ClassTableModel)propertiesTable.getModel();
             model.RemoveProperty(propertiesTable.getSelectedRow());
@@ -267,48 +257,6 @@ public class ClassElementDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_deletePropertyButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(ElementDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(ElementDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(ElementDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(ElementDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//        //</editor-fold>
-//
-//        /* Create and display the dialog */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                ElementDialog dialog = new ElementDialog(new javax.swing.JFrame(), true);
-//                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-//                    @Override
-//                    public void windowClosing(java.awt.event.WindowEvent e) {
-//                        System.exit(0);
-//                    }
-//                });
-//                dialog.setVisible(true);
-//            }
-//        });
-//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CloseBtn;

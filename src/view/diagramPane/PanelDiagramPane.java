@@ -5,6 +5,7 @@
  */
 package view.diagramPane;
 
+import controller.ModelController;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -51,17 +52,21 @@ public class PanelDiagramPane extends javax.swing.JPanel {
     private int currentDraggedElementIndex = 0;
     
     private MetaArchitect ma = null;
+    
+    private ModelController modelController = null;
        
     /**
      * Creates new form PanelDiagramPane
      */
-    public PanelDiagramPane(Rectangle r, MetaArchitect metaArchitect) throws IOException {
+    public PanelDiagramPane(Rectangle r, MetaArchitect metaArchitect, ModelController modelController) throws IOException {
         initComponents();
         //setPreferredSize(new Dimension(1000, 1000));
         //Rectangle r2 = new Rectangle(new Dimension(1000, 1000));
         this.setBounds(r);
         
-        this.ma = metaArchitect;                
+        this.ma = metaArchitect; 
+        
+        this.modelController = modelController;
         
         addMouseListener(new MouseListener() {
 
@@ -83,8 +88,10 @@ public class PanelDiagramPane extends javax.swing.JPanel {
                                 revalidate();
                                 repaint();
                             } else if (selectedNode instanceof model.Class) {
-                                BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();                        
-                                ClassElementDialog jd = new ClassElementDialog(null, false, (model.Class)selectedNode, model);
+                                BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();   
+                               
+                                ClassElementDialog jd = new ClassElementDialog(null, false, (model.Class)selectedNode, modelController); //TODO: reference to modelController?
+                                //ClassElementDialog jd = new ClassElementDialog(null, false, (model.Class)selectedNode, model);
                                 jd.setVisible(true);
                                 //TODO dialog asigned    to an element                       
                                 model.reload();
@@ -93,13 +100,13 @@ public class PanelDiagramPane extends javax.swing.JPanel {
                                 repaint();
                             } else if (selectedNode instanceof model.Package) {
                                 BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();                        
-                                PackageElementDialog jd = new PackageElementDialog(null, false, (model.Package)selectedNode, model);
+                                PackageElementDialog jd = new PackageElementDialog(null, false, (model.Package)selectedNode, modelController);
                                 jd.setVisible(true);
                                 //TODO dialog asigned to an element                       
                                 model.reload();   
                                 System.out.println("Model reloaded3, now repainting....");
-                                ma.revalidate();
-                                ma.repaint();
+                                //ma.revalidate();
+                                //ma.repaint();
                                 revalidate();
                                 repaint();
                             }

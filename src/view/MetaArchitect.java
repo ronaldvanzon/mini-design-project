@@ -5,6 +5,7 @@
  */
 package view;
 
+import controller.ModelController;
 import view.diagramPane.DiagramPane;
 import javax.swing.JDesktopPane;
 import model.Model;
@@ -16,6 +17,7 @@ import model.Model;
 public class MetaArchitect extends javax.swing.JFrame {
 
     private String toolboxSelectedType;
+    private ModelController modelController = new ModelController();
     
     /**
      * Creates new form browser
@@ -23,7 +25,7 @@ public class MetaArchitect extends javax.swing.JFrame {
     public MetaArchitect() {
         initComponents();
         initBrowser();
-    }
+    }  
     
     public void setSelectedTypeToolbox(String classType)
     {
@@ -38,6 +40,7 @@ public class MetaArchitect extends javax.swing.JFrame {
     private void initBrowser(){      
         browser = new view.Browser();
         browser.setVisible(true);
+        browser.setModelController(modelController);
         desktopPane.add(browser);
         desktopPane.getDesktopManager().activateFrame(browser);
                 
@@ -46,7 +49,7 @@ public class MetaArchitect extends javax.swing.JFrame {
         desktopPane.add(toolbox);
         desktopPane.getDesktopManager().activateFrame(toolbox);       
         
-        diagramPane = new view.diagramPane.DiagramPane(this);
+        diagramPane = new view.diagramPane.DiagramPane(this, modelController);
         diagramPane.setVisible(true);
         desktopPane.add(diagramPane);
         desktopPane.getDesktopManager().activateFrame(diagramPane);            

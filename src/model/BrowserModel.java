@@ -10,7 +10,6 @@ import java.util.Enumeration;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-
 /**
  *
  * @author lsmet
@@ -22,14 +21,14 @@ public class BrowserModel extends DefaultTreeModel{
         super.root = new DefaultMutableTreeNode("Models");        
     }
     
-    public Model createModel(String name, int index){
+    /*public Model createModel(String name, int index){
         //Note: Is this cast safe?
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) super.root;
         Model newModel = Model.getInstance(name);
         super.insertNodeInto(newModel, root, index);
         super.reload(root);
         return newModel;
-    }
+    }*/
     
     public ArrayList<String> getTypeNames() {
         ArrayList<String> typeNames = new ArrayList<String>();
@@ -112,5 +111,27 @@ public class BrowserModel extends DefaultTreeModel{
         }
         return ne;
     }
+    
+    
+    
+    /*public TreePath createNewClass(TreePath selectedPath, boolean closable) throws Exception {
+        //show name window
+        String s = "Class1";
+        //find selected element node
+        if ( selectedPath != null ){
+            MutableTreeNode nodeParent = (MutableTreeNode) selectedPath.getLastPathComponent();
+
+            NamedElement ne = createElement(s, nodeParent, 0, false, true);
+            ClassElementDialog jd = new ClassElementDialog(null, closable, ne, this);
+            jd.setVisible(true);
+            reload();
+            //create new object
+            return selectedPath;
+
+        }
+        
+        return null;
+    }*/
+    
     
 }

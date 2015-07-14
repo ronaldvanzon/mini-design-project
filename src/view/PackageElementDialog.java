@@ -5,23 +5,15 @@
  */
 package view;
 
+import controller.ModelController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import model.BrowserModel;
 import model.NamedElement;
 import model.Class;
-import model.Model;
-import model.Property;
 import model.Package;
 
 /**
@@ -30,27 +22,30 @@ import model.Package;
  */
 public class PackageElementDialog extends javax.swing.JDialog {
     
-    private NamedElement node;
-    private BrowserModel model;
+    //private NamedElement node;
+    private model.Package packageElement = null;
+    private ModelController modelController = null;
+    
     private PackageTableModel ttm;
 
     
     /**
      * Creates new form elementDialog
      */
-    public PackageElementDialog(java.awt.Frame parent, boolean modal, NamedElement node, BrowserModel model) {
+    public PackageElementDialog(java.awt.Frame parent, boolean modal, model.Package p, ModelController modelController) {
         super(parent, modal);
         initComponents();       
         
-        this.node = node;
-        this.NameTxt.setText(node.getName());
-        this.DescriptionArea.setText(node.getDescription());
-        this.model = model;
+        this.modelController = modelController;
+        
+        this.packageElement = p;
+        this.NameTxt.setText(p.getName());
+        this.DescriptionArea.setText(p.getDescription());
 
         this.ttm = new PackageTableModel();
         
-        for (int i = 0; i < node.getChildCount(); i++) {
-            TreeNode n = node.getChildAt(i);
+        for (int i = 0; i < p.getChildCount(); i++) {
+            TreeNode n = p.getChildAt(i);
             if (n instanceof Class)
                 this.ttm.AddClass((Class)n);
             else if (n instanceof Package)
@@ -197,8 +192,9 @@ public class PackageElementDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CloseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseBtnActionPerformed
-        node.setName(this.NameTxt.getText());
-        node.setDescription(this.DescriptionArea.getText());
+
+        modelController.changeNameOfPackage(packageElement, this.NameTxt.getText());
+        modelController.changeDescriptionOfPackage(packageElement, this.DescriptionArea.getText());
         this.dispose();
     }//GEN-LAST:event_CloseBtnActionPerformed
 
@@ -215,13 +211,16 @@ public class PackageElementDialog extends javax.swing.JDialog {
         try{
             if ((s != null) && (s.length() > 0)) {
                 //find selected property node
-                MutableTreeNode nodeParent = (MutableTreeNode) node;
+                MutableTreeNode nodeParent = (MutableTreeNode) packageElement;
                 try {
                     //TODO: check whether parent is a Class, since a Property can only be added to a class.
                     //model.createElement(s, nodeParent, 0, true);
-                    NamedElement p = model.createElement(s, nodeParent, 0, false, true);
+//                    NamedElement p = model.createElement(s, nodeParent, 0, false, true);
+                    
+                    model.Class c = modelController.addNewClass((model.Package)nodeParent, s);
+                    
                     PackageTableModel tableModel = (PackageTableModel)propertiesTable.getModel();
-                    tableModel.addRow((Class)p);
+                    tableModel.addRow(c);
                     tableModel.fireTableDataChanged();
                    
                     //create new object
@@ -253,7 +252,7 @@ public class PackageElementDialog extends javax.swing.JDialog {
     private void deleteClassButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteClassButtonActionPerformed
         if (propertiesTable.getSelectedRow() != -1)
         {        
-            node.remove(propertiesTable.getSelectedRow());
+            packageElement.remove(propertiesTable.getSelectedRow());
 
             PackageTableModel model = (PackageTableModel)propertiesTable.getModel();
             model.RemoveClass(propertiesTable.getSelectedRow());
