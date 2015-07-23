@@ -6,24 +6,22 @@
 package view;
 
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
+import view.diagramPane.TreeTransferHandler;
 
 /**
  *
  * @author rzon
  */
 public class Toolbox extends javax.swing.JInternalFrame {
-
-    private MetaArchitect metaArchitect;
     
     /**
      * Creates new form Toolbox
      */
-    public Toolbox(MetaArchitect ma) {
+    public Toolbox() {
         initComponents();
-        metaArchitect = ma;
+        
+        getTree().setDragEnabled(true);
+        getTree().setTransferHandler(new TreeTransferHandler());
     }
 
     /**
@@ -78,11 +76,7 @@ public class Toolbox extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void toolboxTreePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_toolboxTreePropertyChange
-        TreePath selectedPath = toolboxTree.getSelectionPath();
-        if(selectedPath != null){
-            MutableTreeNode selectedNode = (MutableTreeNode) selectedPath.getLastPathComponent();           
-            metaArchitect.setSelectedTypeToolbox(selectedNode.toString());
-        }
+
     }//GEN-LAST:event_toolboxTreePropertyChange
 
     

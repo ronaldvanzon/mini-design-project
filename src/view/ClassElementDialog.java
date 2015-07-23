@@ -29,7 +29,7 @@ public class ClassElementDialog extends javax.swing.JDialog {
      */
     public ClassElementDialog(java.awt.Frame parent, boolean modal, model.Class classElement, ModelController modelController) {
         super(parent, modal);
-        initComponents();       
+        initComponents();
         
         this.modelController = modelController;
         this.classElement = classElement;//modelController.getCurrentClassUnderEdit();

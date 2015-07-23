@@ -5,14 +5,16 @@
  */
 package model;
 
+import util.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 
 /**
  *
  * @author rzon
  */
-public class ModelCollection extends DefaultTreeModel {
+public class ModelCollection extends DefaultTreeModel implements Subject {   
     
     //Singleton pattern.
     private static final ModelCollection instance = new ModelCollection();
@@ -31,5 +33,26 @@ public class ModelCollection extends DefaultTreeModel {
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) super.root;        
         root.insert(m, 0);        
         super.reload(root);
+    }
+    
+    public TreeNode getRoot() {
+        return super.root;
+    }
+    
+    //Observable class
+    public void notifyObservers() {
+        for (Observer o : observers) {
+            o.update();
+        }
+    }
+
+    @Override
+    public void addObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void removeObserver(Observer o) {
+        observers.remove(o);
     }
 }

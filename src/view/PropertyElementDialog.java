@@ -5,9 +5,8 @@
  */
 package view;
 
+import controller.ModelController;
 import java.util.ArrayList;
-import model.BrowserModel;
-import model.NamedElement;
 import model.Property;
 
 /**
@@ -17,12 +16,12 @@ import model.Property;
 public class PropertyElementDialog extends javax.swing.JDialog {
     
     private Property node;
-    private BrowserModel browserModel;
+    private ModelController modelController;
 
     /**
      * Creates new form elementDialog
      */
-    public PropertyElementDialog(java.awt.Frame parent, boolean modal, Property node, BrowserModel browserModel) {
+    public PropertyElementDialog(java.awt.Frame parent, boolean modal, Property node, ModelController modelController) {
         super(parent, modal);
         initComponents();
         this.node = node;
@@ -30,11 +29,11 @@ public class PropertyElementDialog extends javax.swing.JDialog {
         this.DescriptionArea.setText(node.getDescription());
         this.lowervalueTxt.setText(Integer.toString(node.getLowervalue()));
         this.highervalueTxt.setText(Integer.toString(node.getHighervalue()));
-        this.browserModel = browserModel;
+        this.modelController = modelController;
         
         //Initialize the combobox containing all typenames (from the classes). 
         boolean itemWasSelected = false;
-        ArrayList<String> typeNames = browserModel.getTypeNames();
+        ArrayList<String> typeNames = modelController.getTypeNames();
         for (int i = 0; i < typeNames.size(); i++) {
             propertyTypeComboBox.addItem(typeNames.get(i));   
             if (typeNames.get(i).equals(node.getType())) {
@@ -182,13 +181,12 @@ public class PropertyElementDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void CloseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CloseBtnActionPerformed
-        node.setName(this.NameTxt.getText());
-        node.setDescription(this.DescriptionArea.getText());
-        node.setLowervalue(Integer.parseInt(this.lowervalueTxt.getText()));
-        node.setHighervalue(Integer.parseInt(this.highervalueTxt.getText()));
-        System.out.println(propertyTypeComboBox.getName());  
-        System.out.println(propertyTypeComboBox.getSelectedItem().toString());
-        node.setType(propertyTypeComboBox.getSelectedItem().toString());
+        modelController.changeNameOfProperty(node, this.NameTxt.getText());
+        modelController.changeDescriptionOfProperty(node, this.DescriptionArea.getText());
+        modelController.changeLowervalueOfProperty(node, Integer.parseInt(this.lowervalueTxt.getText()));
+        modelController.changeHighervalueOfProperty(node, Integer.parseInt(this.highervalueTxt.getText()));
+        if (propertyTypeComboBox.getSelectedItem() != null)
+            modelController.changeTypeOfProperty(node, propertyTypeComboBox.getSelectedItem().toString());
         this.dispose();
     }//GEN-LAST:event_CloseBtnActionPerformed
 

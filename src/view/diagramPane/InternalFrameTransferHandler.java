@@ -3,30 +3,24 @@ package view.diagramPane;
 /*
  * ListTransferHandler.java is used by the DropDemo example.
  */
+import controller.ModelController;
+import java.awt.Point;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.datatransfer.*;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
-import model.BrowserModel;
 import model.NamedElement;
-import view.ClassElementDialog;
 import view.MetaArchitect;
 
 public class InternalFrameTransferHandler extends TransferHandler {
     private int[] indices = null;
     private int addIndex = -1; //Location where items were added
     private int addCount = 0;  //Number of items added.
-
-    private MetaArchitect ma = null;   
     
-    InternalFrameTransferHandler(MetaArchitect metaArchitect) {
-        this.ma = metaArchitect;
+    private ModelController modelController = null;
+    
+    InternalFrameTransferHandler(ModelController modelController) {
+        this.modelController = modelController;
     }
             
     public boolean canImport(TransferHandler.TransferSupport info) {
@@ -46,7 +40,7 @@ public class InternalFrameTransferHandler extends TransferHandler {
     }
     
     public boolean importData(TransferHandler.TransferSupport info) {
-        /*if (!info.isDrop()) {
+        if (!info.isDrop()) {
             return false;
         }
         
@@ -63,22 +57,28 @@ public class InternalFrameTransferHandler extends TransferHandler {
         DropLocation dl = info.getDropLocation();
         Point dropPoint = dl.getDropPoint();
         
-        if (data.equals("Class")) {
-            NamedElement ne = ma.browser.createNewClass();
-            pane.drawPanel.setNewClass(ne, dropPoint);
-        } else if (data.equals("Package")) {
-            NamedElement ne = ma.browser.createNewPackage();
-            pane.drawPanel.setNewPackage(ne, dropPoint);
-        } else {
-            
-            System.out.println("TransferHandler: " + data);
+        try
+        {
+            if (data.equals("Class")) {
+                NamedElement ne = modelController.addNewClass("Class1");
+                pane.drawPanel.setNewClass(ne, dropPoint);
+            } else if (data.equals("Package")) {
+                NamedElement ne = modelController.addNewPackage("Package1");
+                pane.drawPanel.setNewPackage(ne, dropPoint);
+            } else {
+
+                System.out.println("TransferHandler: " + data);
+            }
+        }
+        catch (Exception e) {
+            System.out.println("Dropping failed: " + e.getMessage());
+            return false;
         }
         
         pane.repaint();
 //        pane.drawPanel.repaint();
             
-        return true;*/
-        return false;
+        return true;
     }
   
     

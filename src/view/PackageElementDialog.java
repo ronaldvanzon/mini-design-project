@@ -9,10 +9,7 @@ import controller.ModelController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import model.BrowserModel;
-import model.NamedElement;
 import model.Class;
 import model.Package;
 
@@ -211,13 +208,13 @@ public class PackageElementDialog extends javax.swing.JDialog {
         try{
             if ((s != null) && (s.length() > 0)) {
                 //find selected property node
-                MutableTreeNode nodeParent = (MutableTreeNode) packageElement;
+                //MutableTreeNode nodeParent = (MutableTreeNode) packageElement;
                 try {
                     //TODO: check whether parent is a Class, since a Property can only be added to a class.
                     //model.createElement(s, nodeParent, 0, true);
 //                    NamedElement p = model.createElement(s, nodeParent, 0, false, true);
                     
-                    model.Class c = modelController.addNewClass((model.Package)nodeParent, s);
+                    model.Class c = modelController.addNewClass(packageElement, s);
                     
                     PackageTableModel tableModel = (PackageTableModel)propertiesTable.getModel();
                     tableModel.addRow(c);
@@ -252,7 +249,7 @@ public class PackageElementDialog extends javax.swing.JDialog {
     private void deleteClassButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteClassButtonActionPerformed
         if (propertiesTable.getSelectedRow() != -1)
         {        
-            packageElement.remove(propertiesTable.getSelectedRow());
+            modelController.removePackageElement(packageElement, propertiesTable.getSelectedRow());
 
             PackageTableModel model = (PackageTableModel)propertiesTable.getModel();
             model.RemoveClass(propertiesTable.getSelectedRow());

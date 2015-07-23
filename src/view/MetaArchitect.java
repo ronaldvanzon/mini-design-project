@@ -7,8 +7,6 @@ package view;
 
 import controller.ModelController;
 import view.diagramPane.DiagramPane;
-import javax.swing.JDesktopPane;
-import model.Model;
 
 /**
  *
@@ -16,8 +14,10 @@ import model.Model;
  */
 public class MetaArchitect extends javax.swing.JFrame {
 
-    private String toolboxSelectedType;
-    private ModelController modelController = new ModelController();
+    private final ModelController modelController = new ModelController();
+    private Browser browser;
+    private Toolbox toolbox;  
+    private DiagramPane diagramPane;
     
     /**
      * Creates new form browser
@@ -27,16 +27,6 @@ public class MetaArchitect extends javax.swing.JFrame {
         initBrowser();
     }  
     
-    public void setSelectedTypeToolbox(String classType)
-    {
-        this.toolboxSelectedType = classType;
-    }
-    
-    public String getSelectedTypeToolbox()
-    {
-        return toolboxSelectedType;
-    }
-    
     private void initBrowser(){      
         browser = new view.Browser();
         browser.setVisible(true);
@@ -44,12 +34,12 @@ public class MetaArchitect extends javax.swing.JFrame {
         desktopPane.add(browser);
         desktopPane.getDesktopManager().activateFrame(browser);
                 
-        toolbox = new view.Toolbox(this);
+        toolbox = new view.Toolbox();
         toolbox.setVisible(true);
         desktopPane.add(toolbox);
         desktopPane.getDesktopManager().activateFrame(toolbox);       
         
-        diagramPane = new view.diagramPane.DiagramPane(this, modelController);
+        diagramPane = new view.diagramPane.DiagramPane(modelController);
         diagramPane.setVisible(true);
         desktopPane.add(diagramPane);
         desktopPane.getDesktopManager().activateFrame(diagramPane);            
@@ -176,9 +166,7 @@ public class MetaArchitect extends javax.swing.JFrame {
             }
         });
     }
-    public Browser browser;
-    public Toolbox toolbox;  
-    public DiagramPane diagramPane;
+
     //private ClassDialogBox classDialogBox;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem browserViewButton;
