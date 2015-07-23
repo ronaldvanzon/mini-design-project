@@ -239,13 +239,14 @@ public class Browser extends javax.swing.JInternalFrame implements TreeSelection
             TreePath selectedPath = tree.getSelectionPath();
             
             model.Class classElement;
-            classElement = modelController.addNewClass(s);
-            tree.setSelectionPath(selectedPath);
+            classElement = modelController.addNewClass(s);            
             
             //Call to ClassElementDialog.
             ClassElementDialog jd = new ClassElementDialog(null, closable, classElement, modelController); //TODO: reference to modelController?
             jd.setVisible(true);
             ModelCollection.getInstance().reload();
+            
+            tree.setSelectionPath(selectedPath);
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(this,
@@ -258,13 +259,14 @@ public class Browser extends javax.swing.JInternalFrame implements TreeSelection
     
     private void deleteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteButtonMouseClicked
         TreePath selectedPath = tree.getSelectionPath();
+        TreePath parentPath = selectedPath.getParentPath();
         if ( selectedPath != null ){
 
             MutableTreeNode selectedNode = (MutableTreeNode) selectedPath.getLastPathComponent();
             //show name window
             int response = JOptionPane.showConfirmDialog(this, 
                                 "You are going to delete node "+selectedNode.toString(), 
-                                "Delete confirmation", 
+                                "Delete confirmation",
                                 JOptionPane.OK_CANCEL_OPTION);
             if ( response != 0 ){ // user Cancels
                 return;
@@ -280,6 +282,8 @@ public class Browser extends javax.swing.JInternalFrame implements TreeSelection
                 }
                 
                 ModelCollection.getInstance().reload();
+                tree.setSelectionPath(parentPath);
+                
                 //create new object
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this,
@@ -343,14 +347,14 @@ public class Browser extends javax.swing.JInternalFrame implements TreeSelection
             TreePath selectedPath = tree.getSelectionPath();
 
             model.Package packageElement;
-            packageElement = modelController.addNewPackage(s);
-            
-            tree.setSelectionPath(selectedPath);
+            packageElement = modelController.addNewPackage(s);                       
             
             //Call to PackageElementDialog.
             PackageElementDialog jd = new PackageElementDialog(null, closable, packageElement, modelController); //TODO: reference to modelController?
             jd.setVisible(true);
             ModelCollection.getInstance().reload();
+            
+            tree.setSelectionPath(selectedPath);
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(this,

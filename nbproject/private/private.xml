@@ -5,7 +5,6 @@
         <group>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/diagramPane/PackageUIElement.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/MetaArchitect.java</file>
-            <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/model/DrawableNamedElement.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/diagramPane/PanelDiagramPane.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/PackageElementDialog.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/controller/ModelController.java</file>
@@ -13,11 +12,13 @@
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/diagramPane/DiagramPane.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/ClassElementDialog.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/diagramPane/UIElement.java</file>
+            <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/model/Model.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/Browser.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/PropertyElementDialog.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/diagramPane/TreeTransferHandler.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/model/ModelCollection.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/view/diagramPane/InternalFrameTransferHandler.java</file>
+            <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/util/Subject.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/util/Observer.java</file>
             <file>file:/D:/shared/TUE%20-%20PDEng/Mini%20design%20project/repo/src/model/NamedElement.java</file>
         </group>
