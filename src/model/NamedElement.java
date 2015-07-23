@@ -11,13 +11,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
  *
  * @author lsmet
  */
-public abstract class NamedElement extends DefaultMutableTreeNode {// implements DrawableNamedElement {// implements Serializable, Transferable {
+public abstract class NamedElement extends DefaultMutableTreeNode { //implements DrawableNamedElement {// implements Serializable, Transferable {
     protected String name;
     protected String description;
     
     public NamedElement(String name){
         super(name);
-        setName(name);
+        setName(name);        
     }
     
     public final void setName(String name){

@@ -14,6 +14,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import javax.swing.tree.MutableTreeNode;
 import model.ModelCollection;
 import model.NamedElement;
@@ -131,6 +132,7 @@ public class PanelDiagramPane extends javax.swing.JPanel implements Observer {
 
                 if (currentDraggedElement != null) {
                     drawableElements.get(currentDraggedElementIndex).setLocation(myX + deltaX, myY + deltaY);
+                    //ModelCollection.getInstance().getRoot()
                     repaint();                    
                 }
             }
@@ -223,6 +225,7 @@ public class PanelDiagramPane extends javax.swing.JPanel implements Observer {
         e.element = ne;
         e.setPosition(dropPoint);
         drawableElements.add(e);
+        
         repaint();
     }
 
@@ -238,14 +241,18 @@ public class PanelDiagramPane extends javax.swing.JPanel implements Observer {
     public void update(Object deletedObject) {
         //Check if some elements were removed. If so, then we must also remove the UIElement copies here.
         if (deletedObject instanceof model.NamedElement) {
-            for (int i = drawableElements.size() - 1; i >= 0; i--) {
-                if (drawableElements.get(i).element == deletedObject) {
-                    drawableElements.remove(i);
-                    i--;
-                }
-            }
+            removeNamedElement((NamedElement)deletedObject);
         }
-        
+       
         repaint();
+    }
+    
+    private void removeNamedElement(NamedElement ne) {
+        for (int i = drawableElements.size() - 1; i >= 0; i--) {
+            if (drawableElements.get(i).element == ne) {
+                drawableElements.remove(i);
+                i--;
+            }
+        }        
     }
 }

@@ -417,7 +417,9 @@ public class Browser extends javax.swing.JInternalFrame implements TreeSelection
 
     @Override
     public void update(Object deletedObject) {
+        TreePath selectedPath = tree.getSelectionPath();
         ModelCollection.getInstance().reload();
         tree.repaint();
+        tree.setSelectionPath(selectedPath);
     }
 }

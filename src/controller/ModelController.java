@@ -150,18 +150,61 @@ public class ModelController {
     }
     
     public void removeElement(NamedElement ne) {
+        //First, remove all the children. Then remove this element.
+        Enumeration e = ne.children();
+        ArrayList<NamedElement> toBeRemoved = new ArrayList<>();
+        while (e.hasMoreElements()) {
+            Object o = e.nextElement();
+            if (o instanceof NamedElement) {
+                toBeRemoved.add((NamedElement)o);                
+            }
+        }
+        
+        for (int i = 0; i < toBeRemoved.size(); i++) {
+            removeElement(toBeRemoved.get(i));
+        }
+        
         ne.remove();
         ModelCollection.getInstance().notifyObservers(ne);
     }
     
     public void removeModel(Model m) {
+        //First, remove all the children. Then remove this model.
+        Enumeration e = m.children();
+        ArrayList<NamedElement> toBeRemoved = new ArrayList<>();
+        while (e.hasMoreElements()) {
+            Object o = e.nextElement();
+            if (o instanceof NamedElement) {
+                toBeRemoved.add((NamedElement)o);                
+            }
+        }
+        
+        for (int i = 0; i < toBeRemoved.size(); i++) {
+            removeElement(toBeRemoved.get(i));
+        }
+        
         m.remove();
-        ModelCollection.getInstance().notifyObservers(null);
+        ModelCollection.getInstance().notifyObservers(m);
     }
     
     public void removePackageElement(NamedElement parent, int propertyIndex) {
         //First get the child that will be deleted, then remove it and then notify everbody that it is deleted.
         NamedElement ne = (NamedElement)parent.getChildAt(propertyIndex);
+        
+        //First, remove all the children. Then remove this model.
+        Enumeration e = ne.children();
+        ArrayList<NamedElement> toBeRemoved = new ArrayList<>();
+        while (e.hasMoreElements()) {
+            Object o = e.nextElement();
+            if (o instanceof NamedElement) {
+                toBeRemoved.add((NamedElement)o);                
+            }
+        }
+        
+        for (int i = 0; i < toBeRemoved.size(); i++) {
+            removeElement(toBeRemoved.get(i));
+        }       
+        
         parent.remove(propertyIndex);
         ModelCollection.getInstance().notifyObservers(ne);
     }
