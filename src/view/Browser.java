@@ -9,27 +9,23 @@ import controller.ModelController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import model.BrowserModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import model.BrowserTransferHandler;
 import model.ModelCollection;
-import model.NamedElement;
-//import model.Model;
-//import model.NamedElement;
-//import model.Class;
-//import model.Property;
-//import model.Package;
-import view.diagramPane.TreeNodeTransferHandler;
-import view.diagramPane.TreeTransferHandler;
+
+import model.*;
+import util.*;
 
 /**
  *
  * @author vmikovsk
  */
-public class Browser extends javax.swing.JInternalFrame {
+public class Browser extends javax.swing.JInternalFrame implements TreeSelectionListener, Observer {
     
     private ModelController modelController = null;
     
@@ -41,8 +37,29 @@ public class Browser extends javax.swing.JInternalFrame {
        
         populateTree();       
         
-        tree.setDragEnabled(true);
-        tree.setTransferHandler(new TreeNodeTransferHandler());
+        //tree.setDragEnabled(true);
+        //tree.setTransferHandler(new TreeNodeTransferHandler());
+        
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        
+        tree.addTreeSelectionListener(this);
+        
+        //Register ourselve as an observer to ModelCollection.
+        ModelCollection.getInstance().addObserver(this);
+    }
+    
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+        //Returns the last path element of the selection.
+        //This method is useful only when the selection model allows a single selection.
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+
+        if (node == null)
+            //Nothing is selected.
+            return;
+
+        modelController.setCurrentSelectedNode(node);
+
     }
     
     public void setModelController(ModelController modelController) {
@@ -221,23 +238,14 @@ public class Browser extends javax.swing.JInternalFrame {
             //find selected element node
             TreePath selectedPath = tree.getSelectionPath();
             
-            MutableTreeNode nodeParent = (MutableTreeNode) selectedPath.getLastPathComponent();
             model.Class classElement;
-            if (nodeParent instanceof model.Model)
-                classElement = modelController.addNewClass((model.Model)nodeParent, s);
-            else
-                classElement = modelController.addNewClass((model.Package)nodeParent, s);
-            
+            classElement = modelController.addNewClass(s);
             tree.setSelectionPath(selectedPath);
             
             //Call to ClassElementDialog.
-                        ClassElementDialog jd = new ClassElementDialog(null, closable, classElement, modelController); //TODO: reference to modelController?
-                        jd.setVisible(true);
-                        
-                        //reload();
-                        //BrowserModel model = (BrowserModel) tree.getModel();
-                        //model.reload();
-                        ModelCollection.getInstance().reload();
+            ClassElementDialog jd = new ClassElementDialog(null, closable, classElement, modelController); //TODO: reference to modelController?
+            jd.setVisible(true);
+            ModelCollection.getInstance().reload();
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(this,
@@ -249,11 +257,10 @@ public class Browser extends javax.swing.JInternalFrame {
     }
     
     private void deleteButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deleteButtonMouseClicked
-        /*TreePath selectedPath = tree.getSelectionPath();
+        TreePath selectedPath = tree.getSelectionPath();
         if ( selectedPath != null ){
 
             MutableTreeNode selectedNode = (MutableTreeNode) selectedPath.getLastPathComponent();
-            BrowserModel model = (BrowserModel) tree.getModel();
             //show name window
             int response = JOptionPane.showConfirmDialog(this, 
                                 "You are going to delete node "+selectedNode.toString(), 
@@ -265,13 +272,14 @@ public class Browser extends javax.swing.JInternalFrame {
             try {
                 if(selectedNode instanceof Model){
                     Model modelNode = (Model) selectedNode;
-                    modelNode.remove();
+                    modelController.removeModel(modelNode);
                 }
                 else if(selectedNode instanceof NamedElement){
                     NamedElement namedElement = (NamedElement) selectedNode;
-                    namedElement.remove();
+                    modelController.removeElement(namedElement);
                 }
-                model.reload();
+                
+                ModelCollection.getInstance().reload();
                 //create new object
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this,
@@ -280,33 +288,30 @@ public class Browser extends javax.swing.JInternalFrame {
                 JOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(Browser.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }*/
+        }
     }//GEN-LAST:event_deleteButtonMouseClicked
 
     private void treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_treeMouseClicked
-        /*if (evt.getClickCount() >= 2) {
+        if (evt.getClickCount() >= 2) {
             TreePath selectedPath = tree.getSelectionPath();
             if(selectedPath != null){
                 MutableTreeNode selectedNode = (MutableTreeNode) selectedPath.getLastPathComponent();
-                if(selectedNode instanceof NamedElement){
+                if(selectedNode instanceof NamedElement) {
                     if (selectedNode instanceof Property) {
-                        BrowserModel model = (BrowserModel) tree.getModel();
-                        PropertyElementDialog jd = new PropertyElementDialog(null, closable, (Property)selectedNode, model);
+                        PropertyElementDialog jd = new PropertyElementDialog(null, closable, (Property)selectedNode, modelController);
                         jd.setVisible(true);
                         //TODO dialog asigned to an element
-                        model.reload();
-                    } else if (selectedNode instanceof Class) {
-                        BrowserModel model = (BrowserModel) tree.getModel();                        
-                        ClassElementDialog jd = new ClassElementDialog(null, closable, (Class)selectedNode, model);
+                        ModelCollection.getInstance().reload();
+                    } else if (selectedNode instanceof model.Class) {                      
+                        ClassElementDialog jd = new ClassElementDialog(null, closable, (model.Class)selectedNode, modelController);
                         jd.setVisible(true);
                         //TODO dialog asigned to an element                       
-                        model.reload();
-                    } else if (selectedNode instanceof Package) {
-                        BrowserModel model = (BrowserModel) tree.getModel();                        
-                        PackageElementDialog jd = new PackageElementDialog(null, closable, (Package)selectedNode, model);
+                        ModelCollection.getInstance().reload();
+                    } else if (selectedNode instanceof model.Package) {                     
+                        PackageElementDialog jd = new PackageElementDialog(null, closable, (model.Package)selectedNode, modelController);
                         jd.setVisible(true);
                         //TODO dialog asigned to an element                       
-                        model.reload();         
+                        ModelCollection.getInstance().reload();      
                     }
                 }
                 else if(selectedNode instanceof Model){
@@ -314,11 +319,10 @@ public class Browser extends javax.swing.JInternalFrame {
                     ModelDialog jd = new ModelDialog(null, closable, (Model)selectedNode);
                     jd.setVisible(true);
                     //TODO dialog asigned to an element
-                    BrowserModel model = (BrowserModel) tree.getModel();
-                    model.reload();
+                    ModelCollection.getInstance().reload();
                 }
             }
-        }*/
+        }
     }//GEN-LAST:event_treeMouseClicked
 
     private void newPackageButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_newPackageButtonMouseClicked
@@ -337,24 +341,16 @@ public class Browser extends javax.swing.JInternalFrame {
         try{
             //find selected element node
             TreePath selectedPath = tree.getSelectionPath();
-            
-            MutableTreeNode nodeParent = (MutableTreeNode) selectedPath.getLastPathComponent();
+
             model.Package packageElement;
-            if (nodeParent instanceof model.Model)
-                packageElement = modelController.addNewPackage((model.Model)nodeParent, s);
-            else
-                packageElement = modelController.addNewPackage((model.Package)nodeParent, s);
+            packageElement = modelController.addNewPackage(s);
             
             tree.setSelectionPath(selectedPath);
             
             //Call to PackageElementDialog.
-                        PackageElementDialog jd = new PackageElementDialog(null, closable, packageElement, modelController); //TODO: reference to modelController?
-                        jd.setVisible(true);
-                        
-                        //reload();
-                        //BrowserModel model = (BrowserModel) tree.getModel();
-                        //model.reload();
-                        ModelCollection.getInstance().reload();
+            PackageElementDialog jd = new PackageElementDialog(null, closable, packageElement, modelController); //TODO: reference to modelController?
+            jd.setVisible(true);
+            ModelCollection.getInstance().reload();
         }
         catch(Exception e){
             JOptionPane.showMessageDialog(this,
@@ -418,4 +414,11 @@ public class Browser extends javax.swing.JInternalFrame {
     private javax.swing.JMenu newPackageButton;
     private javax.swing.JTree tree;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void update(Object deletedObject) {
+        System.out.println("update called in Browser");
+        ModelCollection.getInstance().reload();
+        tree.repaint();
+    }
 }

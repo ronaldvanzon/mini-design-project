@@ -10,5 +10,5 @@ package util;
  * @author rzon
  */
 public interface Observer {
-    public void update();
+    public void update(Object deletedObject);
 }

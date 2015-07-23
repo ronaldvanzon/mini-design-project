@@ -6,42 +6,9 @@
 package view.diagramPane;
 
 import controller.ModelController;
-import java.awt.Graphics;
-import java.awt.GridBagLayout;
-import java.awt.Point;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureRecognizer;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
-import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
-import model.NamedElement;
-import view.MetaArchitect;
-import view.MetaArchitect;
 
 /**
  *
@@ -49,29 +16,22 @@ import view.MetaArchitect;
  */
 public class DiagramPane extends javax.swing.JInternalFrame {
 
-    private MetaArchitect metaArchitect;
-    public PanelDiagramPane drawPanel;   
-    
-    private ModelController modelController = null;
+    public PanelDiagramPane drawPanel;          
     
     /**
      * Creates new form DiagramPane
      */
-    public DiagramPane(MetaArchitect ma, ModelController modelController) {
+    public DiagramPane(ModelController modelController) {
         initComponents();
-        this.metaArchitect = ma;
         
         try {
-            drawPanel = new PanelDiagramPane(this.getBounds(), metaArchitect, modelController);
+            drawPanel = new PanelDiagramPane(this.getBounds(), modelController);
             getContentPane().add(drawPanel);
 
             pack();
-            setVisible(true);
+            setVisible(true);           
             
-            ma.toolbox.getTree().setDragEnabled(true);
-            ma.toolbox.getTree().setTransferHandler(new TreeTransferHandler());
-            
-            this.setTransferHandler(new InternalFrameTransferHandler(metaArchitect));
+            this.setTransferHandler(new InternalFrameTransferHandler(modelController));
             
             //ma.browser.getTree().setDragEnabled(true);
             //ma.browser.getTree().setTransferHandler(new TreeTransferHandler());

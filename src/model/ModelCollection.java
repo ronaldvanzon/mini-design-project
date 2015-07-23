@@ -40,9 +40,9 @@ public class ModelCollection extends DefaultTreeModel implements Subject {
     }
     
     //Observable class
-    public void notifyObservers() {
+    public void notifyObservers(Object deletedObject) {
         for (Observer o : observers) {
-            o.update();
+            o.update(deletedObject);
         }
     }
 

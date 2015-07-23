@@ -35,7 +35,7 @@ public class ModelController {
         else if (parent instanceof model.Package)
             ((model.Package)parent).add(c);
         
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
         
         return c;        
     }
@@ -50,7 +50,7 @@ public class ModelController {
         else
             throw new Exception("The current selected node must be a model or package in order to add a new class.");
 
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
         
         return c;
     }
@@ -63,7 +63,7 @@ public class ModelController {
         else if (parent instanceof model.Package)
             ((model.Package)parent).add(p);
         
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
         
         return p;
     }    
@@ -78,29 +78,29 @@ public class ModelController {
         else
             throw new Exception("The current selected node must be a model or package in order to add a new package.");        
         
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
         
         return p1;
     }
     
     public void changeNameOfClass(model.Class classElement, String name) {
         classElement.setName(name);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }
     
     public void changeDescriptionOfClass(model.Class classElement, String description) {
         classElement.setDescription(description);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }
     
     public void changeNameOfPackage(model.Package packageElement, String name) {
         packageElement.setName(name);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }
     
     public void changeDescriptionOfPackage(model.Package packageElement, String description) {
         packageElement.setDescription(description);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }    
     
     public model.Property addProperty(model.Class parent, String name) {
@@ -108,60 +108,62 @@ public class ModelController {
         Property p = new Property(name);
         parent.add(p);
         
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
         
         return p;
     }
     
     public void removeProperty(model.Class parent, int propertyIndex) {
         parent.remove(propertyIndex);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }
     
     public void changeNameOfProperty(model.Property p, String name) {
         p.setName(name);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }
     
     public void changeDescriptionOfProperty(model.Property p, String descr) {
         p.setDescription(descr);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }    
     
     public void changeTypeOfProperty(model.Property p, String typeName) {
         p.setType(typeName);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }
     
     public void changeLowervalueOfProperty(model.Property p, int value) {
         p.setLowervalue(value);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }    
     
     public void changeHighervalueOfProperty(model.Property p, int value) {
         p.setHighervalue(value);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }      
 
     public void addNewModel(String s) {
         Model m = new Model(s);
         ModelCollection.getInstance().addNewModel(m);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }
     
     public void removeElement(NamedElement ne) {
         ne.remove();
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(ne);
     }
     
     public void removeModel(Model m) {
         m.remove();
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(null);
     }
     
     public void removePackageElement(NamedElement parent, int propertyIndex) {
+        //First get the child that will be deleted, then remove it and then notify everbody that it is deleted.
+        NamedElement ne = (NamedElement)parent.getChildAt(propertyIndex);
         parent.remove(propertyIndex);
-        ModelCollection.getInstance().notifyObservers();
+        ModelCollection.getInstance().notifyObservers(ne);
     }
     
     public ArrayList<String> getTypeNames() {

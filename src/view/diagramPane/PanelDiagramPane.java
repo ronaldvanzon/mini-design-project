@@ -6,40 +6,29 @@
 package view.diagramPane;
 
 import controller.ModelController;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import javax.imageio.ImageIO;
-import javax.swing.JTextField;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreePath;
-import model.BrowserModel;
-import model.Model;
+import model.ModelCollection;
 import model.NamedElement;
 import model.Property;
 import view.ClassElementDialog;
-import view.MetaArchitect;
-import view.ModelDialog;
 import view.PackageElementDialog;
 import view.PropertyElementDialog;
+
+import util.*;
 
 /**
  *
  * @author rzon
  */
-public class PanelDiagramPane extends javax.swing.JPanel {
+public class PanelDiagramPane extends javax.swing.JPanel implements Observer {
 
     private ArrayList<UIElement> drawableElements = new ArrayList<UIElement>(); 
     
@@ -50,23 +39,17 @@ public class PanelDiagramPane extends javax.swing.JPanel {
     
     private UIElement currentDraggedElement = null;
     private int currentDraggedElementIndex = 0;
-    
-    private MetaArchitect ma = null;
-    
-    private ModelController modelController = null;
        
     /**
      * Creates new form PanelDiagramPane
      */
-    public PanelDiagramPane(Rectangle r, MetaArchitect metaArchitect, ModelController modelController) throws IOException {
+    public PanelDiagramPane(Rectangle r, ModelController modelController) throws IOException {
         initComponents();
         //setPreferredSize(new Dimension(1000, 1000));
         //Rectangle r2 = new Rectangle(new Dimension(1000, 1000));
         this.setBounds(r);
         
-        this.ma = metaArchitect; 
-        
-        this.modelController = modelController;
+        ModelCollection.getInstance().addObserver(this);
         
         addMouseListener(new MouseListener() {
 
@@ -79,31 +62,28 @@ public class PanelDiagramPane extends javax.swing.JPanel {
                         MutableTreeNode selectedNode = selectedElement.element;
                         if(selectedNode instanceof NamedElement){
                             if (selectedNode instanceof Property) {
-                                BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();
-                                PropertyElementDialog jd = new PropertyElementDialog(null, false, (Property)selectedNode, model);
+                                PropertyElementDialog jd = new PropertyElementDialog(null, false, (Property)selectedNode, modelController);
                                 jd.setVisible(true);
                                 //TODO dialog asigned to an element
-                                model.reload();
+                                ModelCollection.getInstance().reload();
                                 System.out.println("Model reloaded1, now repainting....");
                                 revalidate();
                                 repaint();
                             } else if (selectedNode instanceof model.Class) {
-                                BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();   
                                
                                 ClassElementDialog jd = new ClassElementDialog(null, false, (model.Class)selectedNode, modelController); //TODO: reference to modelController?
                                 //ClassElementDialog jd = new ClassElementDialog(null, false, (model.Class)selectedNode, model);
                                 jd.setVisible(true);
                                 //TODO dialog asigned    to an element                       
-                                model.reload();
+                                ModelCollection.getInstance().reload();
                                 System.out.println("Model reloaded,2 now repainting....");
                                 revalidate();
                                 repaint();
-                            } else if (selectedNode instanceof model.Package) {
-                                BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();                        
+                            } else if (selectedNode instanceof model.Package) {                                                  
                                 PackageElementDialog jd = new PackageElementDialog(null, false, (model.Package)selectedNode, modelController);
                                 jd.setVisible(true);
                                 //TODO dialog asigned to an element                       
-                                model.reload();   
+                                ModelCollection.getInstance().reload();  
                                 System.out.println("Model reloaded3, now repainting....");
                                 //ma.revalidate();
                                 //ma.repaint();
@@ -111,21 +91,10 @@ public class PanelDiagramPane extends javax.swing.JPanel {
                                 repaint();
                             }
                         }
-                        else if(selectedNode instanceof Model){
-                            //show properties window
-                            ModelDialog jd = new ModelDialog(null, false, (Model)selectedNode);
-                            jd.setVisible(true);
-                            //TODO dialog asigned to an element
-                            BrowserModel model = (BrowserModel) ma.browser.getTree().getModel();
-                            model.reload();
-                            System.out.println("Model reloaded4, now repainting....");
-                            revalidate();
-                            repaint();
-                        }
                     }
                     
-                    ma.revalidate();
-                    ma.repaint();
+                    //ma.revalidate();
+                    //ma.repaint();
                 }
             }           
 
@@ -186,6 +155,8 @@ public class PanelDiagramPane extends javax.swing.JPanel {
     protected void paintComponent(Graphics g) {
        super.paintComponent(g);
 
+       //ModelCollection.getInstance().getChild(screenX, WIDTH)
+       
        for (int i = 0; i < drawableElements.size(); i++) {
            UIElement e = drawableElements.get(i);
            e.draw(g);
@@ -260,6 +231,21 @@ public class PanelDiagramPane extends javax.swing.JPanel {
         e.element = ne;
         e.setPosition(dropPoint);
         drawableElements.add(e);
+        repaint();
+    }
+
+    @Override
+    public void update(Object deletedObject) {
+        //Check if some elements were removed. If so, then we must also remove the UIElement copies here.
+        if (deletedObject instanceof model.NamedElement) {
+            for (int i = drawableElements.size() - 1; i >= 0; i--) {
+                if (drawableElements.get(i).element == deletedObject) {
+                    drawableElements.remove(i);
+                    i--;
+                }
+            }
+        }
+        
         repaint();
     }
 }

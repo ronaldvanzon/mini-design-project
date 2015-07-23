@@ -35,7 +35,6 @@ package view.diagramPane;
  * ListTransferHandler.java is used by the DropDemo example.
  */
 import javax.swing.*;
-import java.awt.*;
 import java.awt.datatransfer.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
